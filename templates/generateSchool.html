@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Generate School{% endblock %}
+{% block content %}
+<div class="row">
+  {% include "error.html" %}
+  <form method="post" class="col s12">
+    <div class="row">
+      <div class="input-field col s6">
+        <input name="name" type="text" id="name" value="{% if data is defined %}{{data.name}}{% endif %}" required />
+        <label for="name">Name</label>
+      </div>
+      <div class="input-field col s6">
+        <input name="sc" type="text" id="school_code" value="{% if data is defined %}{{data.school_code}}{% endif %}" required />
+        <label for="school_code">School Code (used when entering request)</label>
+      </div>
+      <div class="input-field col s12">
+        <textarea id="description" class="materialize-textarea" name="description" required value="{% if data is defined %}{{data.description}}{% endif %}"></textarea>
+        <label for="description">Description</label>
+      </div>
+      <div class="input-field col s12">
+        <input name="address" type="text" id="address" value="{% if data is defined %}{{data.address}}{% endif %}" required />
+        <label for="address">Address</label>
+      </div>
+      <button class="btn submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

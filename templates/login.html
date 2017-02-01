@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
-{% block header %}
+{% block title %}
 Login
 {% endblock %}
 {% block content %}
-<form method="post">
-  <div class="form-group">
-    <label></label>
+<div class="container">
+  <div class="row">
+    {% include "error.html" %}
+
+      <div class="row">
+        <div class="center">
+          <a class="btn" href="{% if login_url is defined %}{{login_url}}{% else %}/cloud/main{% endif %}">{% if login_url is defined %}Login using Google{% else %}Goto Cloud{% endif %}</a>
+        </div>
+      </div>
   </div>
-</form>
+</div>
 {% endblock %}

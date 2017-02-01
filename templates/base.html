@@ -1,13 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Webnouncements - {% block title %}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <title>Webnouncements - {% block title %}{% endblock %}</title>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
+    <nav>
+      <div class="nav-wrapper" style="background-color: LightSkyBlue;">
+        <a href="/" class="brand-logo center">Webnouncements</a>
+        {% if user_email is defined %}
+        <ul class="right">
+					<li><a href="/cloud/main">{{ user_email }}</a></li>
+				</ul>
+        {% endif %}
+        <ul class="left">
+					<li><a href="{% if logout_url is defined %} {{ logout_url }} {% else %} {{ login_url }} {% endif %}"> {% if login_url is defined %}Log In{% else %}Log Out{% endif %}</a></li>
+				</ul>
+      </div>
+
+    </nav>
     {% block content %}
     {% endblock %}
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
     {% block scripts %}
     {% endblock %}
   </body>

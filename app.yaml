@@ -3,8 +3,22 @@ api_version: 1
 threadsafe: true
 
 handlers:
+- url: /display/.*
+  script: lib.apps.display.app
+- url: /account/.*
+  script: lib.apps.account.app
+- url: /submit
+  script: lib.apps.submit.app
+- url: /cloud/.*
+  script: lib.apps.cloud.app
+- url: /
+  static_files: static/index.html
+  upload: static/index.html
+- url: /school/.*
+  script: lib.apps.school.app
 - url: /.*
-  script: main.app
+  static_files: static/404.html
+  upload: static/404.html
 
 libraries:
 - name: jinja2

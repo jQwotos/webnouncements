@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Webnouncements</title>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper" style="background-color: LightSkyBlue;">
+        <a href="/" class="brand-logo center">Webnouncements</a>
+        <ul class="right">
+					<li><a href="/cloud/main">Go to Cloud</a></li>
+				</ul>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <p>
+                Welcome to Webnouncements, a webapp that manages announcement requests.
+                Currently, only woodroffehs has access. If you would like access, feel free to contact me at le.kent.jason@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Submit Announcement</span>
+              <form method="get" action="/submit">
+                <input placeholder="School Code" name="sc" type="text" />
+                <button class="btn submit">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+
+  </body>
+</html>

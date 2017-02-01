@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Cloud{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col s6 m4">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Join School</span>
+        </div>
+        <div class="container">
+          <form method="get" action="/cloud/join">
+            <div class="input-field">
+              <input type="text" name="ic" id="ic"/>
+              <label for="ic">Invite Code</label>
+            </div>
+            <button class="btn submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m8">
+      <div class="collection">
+        {% for school in schools %}
+          <a href="/school/main?s={{school.school_code}}" class="collection-item">{{school.name}} | {{school.school_code}}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
