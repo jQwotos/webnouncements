@@ -11,6 +11,10 @@ from ..supports.tables import Post, SchoolAccount, Invite, School
 
 static_location = '/school'
 
+def verifyLink(request_user, request_school):
+    return True if len(SchoolAccount(SchoolAccount.user_id == request_user, SchoolAccount.school_uuid == request_school).fetch()) > 0 else False
+
+
 class School(Handler):
     def get(self):
         user = self.getUserInfo()
@@ -33,7 +37,7 @@ class Send(Handler):
         postQueryInfo = Post.query(Post.uuid == data['uuid']).fetch()
         post = postQueryInfo[0] if len(postQueryInfo) > 0 else None
         user = self.getUserInfo()
-        if SchoolAccount.verifyLink(user['userInfo'].user_id, post.school_uuid):
+        if verifyLink(user['userInfo'].user_id, post.school_uuid):
             if data['action'] == 'deny':
                 post.approved = False
                 post.denied = True
@@ -48,7 +52,7 @@ class GenerateInvite(Handler):
         data = json.loads(self.request.body)
         user = self.getUserInfo()
 
-        if SchoolAccount.verifyLink(user['userInfo'].user_id, data['school_uuid']):
+        if verifyLink(user['userInfo'].user_id, data['school_uuid']):
             code = str(uuid4())
             invite = Invite(
                 uuid = code,
@@ -68,7 +72,7 @@ class Join(Handler):
         inviteInfo = inviteQueryInfo[0] if len(inviteQueryInfo) > 0 else None
 
         if inviteInfo and inviteInfo.uses > 0:
-            if not SchoolAccount.verifyLink(user['userInfo'].user_id, inviteInfo.school_uuid):
+            if not verifyLink(user['userInfo'].user_id, inviteInfo.school_uuid):
                 schoolAccount = SchoolAccount(
                     user_id = user['userInfo'].user_id,
                     school_uuid = inviteInfo.school_uuid,
