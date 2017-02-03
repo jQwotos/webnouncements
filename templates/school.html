@@ -16,7 +16,30 @@
                       {{post.title}}
                     </div>
                     <div class="collapsible-body">
-                      Details
+                      <div class="row">
+                        <div class="col s12 m6">
+                          <div class="card-panel">
+                            <div class="card-content">
+                              Created on {{post.created}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col s12 m6">
+                          <div class="card-panel">
+                            <div class="card-content">
+                              Start Date {{post.startDate}} | End Date {{post.endDate}}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {{post.text}}
+                      <div class="row">
+                        <div class="col s12">
+                          <div class="collection">
+                            <a class="red collection-item white-text action-btn" action="deny" postId="{{post.uuid}}">Remove</a>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </li>
                 {% endfor %}
@@ -35,7 +58,35 @@
                       {{post.title}}
                     </div>
                     <div class="collapsible-body">
-                      Details
+                      <div class="row">
+                        <div class="col s12 m6">
+                          <div class="card-panel">
+                            <div class="card-content">
+                              Created on {{post.created}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col s12 m6">
+                          <div class="card-panel">
+                            <div class="card-content">
+                              Start Date {{post.startDate}} | End Date {{post.endDate}}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {{post.text}}
+                      <div class="row">
+                        <div class="col s6">
+                          <div class="collection">
+                            <a class="red collection-item white-text action-btn" action="deny" postId="{{post.uuid}}">Deny</a>
+                          </div>
+                        </div>
+                        <div class="col s6">
+                          <div class="collection">
+                            <a class="green collection-item white-text action-btn" action="approve" postId="{{post.uuid}}">Approve</a>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </li>
                 {% endfor %}
@@ -45,6 +96,18 @@
         </li>
       </ul>
     </div>
+    <div class="col s12">
+      <div class="collection">
+        <a class="collection-item white-text orange" id="generateInvite" schoolCode="{{school_uuid}}">Generate Invite Code</a>
+      </div>
+      <p class="range-field">
+        <input type="range" id="numInvites" min="0" max="50" />
+      </p>
+    </div>
+    <div id="inviteCodeModal" class="modal bottom-sheet">
+     <div class="modal-content">
+       <h4 id="inviteCodeText">Generating Code...</h4>
+     </div>
   </div>
 </div>
 {% endblock %}
@@ -52,6 +115,39 @@
 <script>
 $(document).ready(function(){
   $('.collapsible').collapsible();
+  $('.modal').modal();
 });
+</script>
+<script>
+$(".action-btn").click(function(){
+  var uuid = $(this).attr("postId");
+  var action = $(this).attr("action");
+  $.ajax({
+    type:"POST",
+    url: "/school/send",
+    dataType: 'json',
+    data: JSON.stringify({'uuid': uuid,
+                          'action': action})
+  });
+  $(this).parent().parent().parent().parent().parent().toggle();
+})
+</script>
+<script>
+$("#generateInvite").click(function(){
+  var uuid = $(this).attr("schoolCode");
+  var numInvites = $('#numInvites').val();
+  console.log(numInvites)
+  $.ajax({
+    type:"POST",
+    url: "/school/generateInvite",
+    dataType: "json",
+    data: JSON.stringify({"school_uuid": uuid,
+                          "numInvites": numInvites})
+  })
+    .done(function(data){
+      $("#inviteCodeText").text(data['code']);
+      $("#inviteCodeModal").modal("open");
+    });
+  })
 </script>
 {% endblock %}

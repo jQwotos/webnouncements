@@ -104,25 +104,8 @@ class GenerateSchool(Handler):
         else:
             self.render("login.html", error="Please login before generating school.")
 
-class Invite(Handler):
-    def get(self):
-        user = self.getUserInfo()
-        if user['user'] and user['userInfo']:
-            schools = SchoolAccount.query(SchoolAccount.user_id == user['userInfo'].user_id).fetch()
-            updatedSchools = []
-            for school in schools:
-                schoolInfo = School.query(School.uuid == school.school_uuid).fetch(1)[0]
-                updatedSchools.append({
-                    "name": schoolInfo.name,
-                    "school_code": schoolInfo.school_code,
-                })
-            self.render("invite.html", schools = updatedSchools)
-        else:
-            self.render('login.html', error="Please login before creating an invite.")
-
 app = webapp2.WSGIApplication([
     (static_location + '/approve', Approve),
     (static_location + '/main', Cloud),
     (static_location + '/generateSchool', GenerateSchool),
-    (static_location + '/invite', Invite),
 ], debug=True)

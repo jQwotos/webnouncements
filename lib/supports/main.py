@@ -1,6 +1,11 @@
-import webapp2, jinja2, os
+import os
+import jinja2
+import json
+
+import webapp2
 
 from google.appengine.api import users
+
 from tables import Account
 
 # os.path.dirname(__file__) is the current location of the file
@@ -9,6 +14,9 @@ template_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 class Handler(webapp2.RequestHandler):
+    def respondToJson(self, json_data):
+        self.response.out.write(json.dumps((json_data)))
+
     def getUserInfo(self, query_database=True):
         user = users.get_current_user()
         if user:
