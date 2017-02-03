@@ -12,7 +12,7 @@ from ..supports.tables import Post, SchoolAccount, Invite, School
 static_location = '/school'
 
 def verifyLink(request_user, request_school):
-    return True if len(SchoolAccount(SchoolAccount.user_id == request_user, SchoolAccount.school_uuid == request_school).fetch()) > 0 else False
+    return True if len(SchoolAccount.query(SchoolAccount.user_id == request_user, SchoolAccount.school_uuid == request_school).fetch()) > 0 else False
 
 
 class School(Handler):
