@@ -27,7 +27,9 @@ indexes:
     - name: created
     - name: uuid
     - name: startDate
+      direction: desc
     - name: endDate
+      direction: desc
     - name: title
     - name: text
     - name: approved
