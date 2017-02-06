@@ -37,6 +37,9 @@ class Handler(webapp2.RequestHandler):
         t = jinja_env.get_template(template)
         return t.render(params)
 
+    def renderBlank(self, template, **kw):
+        self.write(self.render_str(template, **kw))
+
     def render(self, template, **kw):
         user = users.get_current_user()
         if user:

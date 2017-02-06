@@ -1,4 +1,5 @@
 import json
+import datetime
 from uuid import uuid4
 
 import webapp2
@@ -8,23 +9,21 @@ from google.appengine.api import users
 
 from ..supports.main import Handler
 from ..supports.tables import Post, SchoolAccount, Invite, School
+from ..supports.tabler import verifyLink
 
 static_location = '/school'
-
-def verifyLink(request_user, request_school):
-    return True if len(SchoolAccount.query(SchoolAccount.user_id == request_user, SchoolAccount.school_uuid == request_school).fetch()) > 0 else False
-
 
 class School(Handler):
     def get(self):
         user = self.getUserInfo()
         school = self.request.get("s")
         if user['user'] and user['userInfo']:
+            today = datetime.datetime.now()
             schoolInfo = SchoolAccount.getLinkSC(user['userInfo'].user_id, school)
             requests = Post.query(Post.school_uuid == schoolInfo.uuid, Post.approved == False, Post.denied == False).order(-Post.startDate).fetch(50)
-            posts = Post.query(Post.school_uuid == schoolInfo.uuid, Post.approved == True).order(-Post.startDate).fetch(50)
+            posts = Post.query(Post.school_uuid == schoolInfo.uuid, Post.approved == True, Post.endDate >= today).order(-Post.endDate).fetch(50)
             if schoolInfo:
-                self.render('school.html', requests=requests, posts=posts, school_uuid = schoolInfo.uuid)
+                self.render('school.html', requests=requests, posts=posts, school_uuid = schoolInfo.uuid, school_code = school)
             else:
                 self.render("cloud.html", error="You don't belong to that school.")
 

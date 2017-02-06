@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    {% include '_includes/head.html' %}
+    <ul class="collapsible" data-collapsible="expandable">
+      {% for post in posts %}
+      <li>
+         <div class="collapsible-header">{{post.title}}</div>
+         <div class="collapsible-body">{{post.text}}</div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% include '_includes/scripts.html' %}
+  </body>
+</html>

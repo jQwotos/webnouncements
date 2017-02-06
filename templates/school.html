@@ -20,7 +20,7 @@
                         <div class="col s12 m6">
                           <div class="card-panel">
                             <div class="card-content">
-                              Created on {{post.created}}
+                              Created on {{post.created}} by {{post.submitterName}}
                             </div>
                           </div>
                         </div>
@@ -97,6 +97,16 @@
       </ul>
     </div>
     <div class="col s12">
+      <div class="collection">
+        <a class="collection-item white-text orange" href='/display/today?s={{school_uuid}}'>Create Display</a>
+      </div>
+    </div>
+    <div class="col s6">
+      <div class="collection">
+        <a class="collection-item white-text orange" href='/submit?sc={{school_code}}'>Create Announcement</a>
+      </div>
+    </div>
+    <div class="col s6">
       <div class="collection">
         <a class="collection-item white-text orange" id="generateInvite" schoolCode="{{school_uuid}}">Generate Invite Code</a>
       </div>

@@ -8,7 +8,8 @@ from google.appengine.ext import ndb
 
 
 from ..supports.main import Handler
-from ..supports.tables import School, Post
+from ..supports.tables import School, Post, SchoolAccount
+from ..supports.tabler import verifyLink
 
 static_location = '/submit'
 submit_html = "submit.html"
@@ -54,6 +55,13 @@ class Submit(Handler):
         else:
             schoolQueryInfo = School.query(School.school_code == data["sc"]).fetch()
             schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
+            user = self.getUserInfo()
+            approved = False
+            submitterName = "Anonymous"
+            if user:
+                if verifyLink(user['userInfo'].user_id, schoolInfo.uuid):
+                    approved = True
+                    submitterName = user['userInfo'].name
 
             if schoolInfo:
                 post = Post(
@@ -63,8 +71,9 @@ class Submit(Handler):
                     startDate = data['startDate'],
                     endDate = data['endDate'],
                     school_uuid = schoolInfo.uuid,
-                    approved = False,
+                    approved = approved,
                     denied = False,
+                    submitterName = submitterName,
                 )
                 post.put()
                 self.redirect('/')
