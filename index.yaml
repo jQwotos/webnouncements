@@ -62,6 +62,12 @@ indexes:
 - kind: Post
   properties:
   - name: approved
+  - name: school_uuid
+  - name: startDate
+
+- kind: Post
+  properties:
+  - name: approved
   - name: denied
   - name: school_uuid
   - name: startDate

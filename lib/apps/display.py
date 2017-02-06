@@ -21,7 +21,7 @@ class Today(Handler):
     def get(self):
         today = datetime.datetime.now().date()
         school = self.request.get('s')
-        posts = Post.query(Post.school_uuid == school).filter(Post.startDate <= today).fetch()
+        posts = Post.query(Post.school_uuid == school, Post.approved == True).filter(Post.startDate <= today).fetch()
         for post in list(posts):
             if not post.endDate >= today:
                 posts.remove(post)
