@@ -58,7 +58,7 @@ class Submit(Handler):
             user = self.getUserInfo()
             approved = False
             submitterName = "Anonymous"
-            if user:
+            if user and 'userInfo' in user:
                 if verifyLink(user['userInfo'].user_id, schoolInfo.uuid):
                     approved = True
                     submitterName = user['userInfo'].name
