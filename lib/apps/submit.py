@@ -12,7 +12,8 @@ from ..supports.tables import School, Post, SchoolAccount
 from ..supports.tabler import verifyLink
 
 static_location = '/submit'
-submit_html = "submit.html"
+submit_html = "submit/submit.html"
+badsubmit_html = "submit/badsubmission.html"
 
 # Handles submission
 class Submit(Handler):
@@ -30,9 +31,9 @@ class Submit(Handler):
                     "sc": school,
                 }, school_name = schoolInfo.name, school_code = schoolInfo.school_code)
             else:
-                self.render(submit_html, error="Invalid School Code")
+                self.render(badsubmit_html, error="Invalid School Code")
         else:
-            self.render(submit_html, error="No school code provided")
+            self.render(badsubmit_html, error="No school code provided")
 
     def post(self):
         # Retrieve data from form
@@ -49,12 +50,17 @@ class Submit(Handler):
         for item in data:
             if data[item] == "":
                 error += ("Please fill out %s\n" % (item))
+
+        schoolQueryInfo = School.query(School.school_code == data["sc"]).fetch()
+        schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
+
+        if not schoolInfo:
+            error += "Invalid school code \n"
+
         if error != "":
             self.render(submit_html, data = data, error = error)
         # If no error has occured, then query the for the school and create a post
         else:
-            schoolQueryInfo = School.query(School.school_code == data["sc"]).fetch()
-            schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
             user = self.getUserInfo()
             approved = False
             submitterName = "Anonymous"

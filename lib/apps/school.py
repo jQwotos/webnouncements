@@ -8,7 +8,7 @@ from google.appengine.ext import ndb
 from google.appengine.api import users
 
 from ..supports.main import Handler
-from ..supports.tables import Post, SchoolAccount, Invite, School
+from ..supports.tables import Post, SchoolAccount, Invite, School, Account
 from ..supports.tabler import verifyLink
 
 static_location = '/school'
@@ -29,6 +29,21 @@ class School(Handler):
 
         else:
             self.render("cloud.html", error="Please login before accessing cloud.")
+
+class Maintain(Handler):
+    def get(self):
+        user = self.getUserInfo()
+        school = self.request.get("s")
+        if user['user'] and user['userInfo']:
+            schoolInfo = SchoolAccount.getLinkSC(user['userInfo'].user_id, school)
+            users = SchoolAccount.query(SchoolAccount.school_uuid == schoolInfo.uuid).fetch()
+            usersInfo = []
+            for account in users:
+                usersInfo.append(Account.query(Account.user_id == account.user_id).fetch(1)[0])
+            if users:
+                self.render('cloud/maintain.html', users=usersInfo)
+        else:
+            self.render("cloud.html", error="You don't belong to that school.")
 
 class Send(Handler):
     def post(self):
@@ -85,5 +100,6 @@ app = webapp2.WSGIApplication([
     (static_location + '/main', School),
     (static_location  + '/send', Send),
     (static_location + '/generateInvite', GenerateInvite),
-    (static_location + '/join', Join)
+    (static_location + '/join', Join),
+    (static_location + '/maintain', Maintain),
 ], debug=True)
