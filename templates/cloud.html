@@ -20,6 +20,8 @@
       </div>
     </div>
     <div class="col s12 m8">
+      <h4>Access Schools</h4>
+      <hr />
       <div class="collection">
         {% for school in schools %}
           <a href="/school/main?s={{school.school_code}}" class="collection-item">{{school.name}} | {{school.school_code}}</a>

@@ -16,6 +16,8 @@ handlers:
   upload: static/index.html
 - url: /school/.*
   script: lib.apps.school.app
+- url: /manage/.*
+  script: lib.apps.manage.app
 - url: /.*
   static_files: static/404.html
   upload: static/404.html

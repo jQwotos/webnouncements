@@ -94,6 +94,7 @@ class GenerateSchool(Handler):
                     schoolAccount = SchoolAccount(
                         user_id = user['userInfo'].user_id,
                         school_uuid = data['uuid'],
+                        role = "admin"
                     )
                     schoolAccount.put()
                     self.redirect(static_location + "/main")

@@ -19,31 +19,19 @@ class School(Handler):
         school = self.request.get("s")
         if user['user'] and user['userInfo']:
             today = datetime.datetime.now()
-            schoolInfo = SchoolAccount.getLinkSC(user['userInfo'].user_id, school)
+            schoolInfo, linkInfo = SchoolAccount.getLinkSC(user['userInfo'].user_id, school)
             requests = Post.query(Post.school_uuid == schoolInfo.uuid, Post.approved == False, Post.denied == False).order(-Post.startDate).fetch(50)
             posts = Post.query(Post.school_uuid == schoolInfo.uuid, Post.approved == True, Post.endDate >= today).order(-Post.endDate).fetch(50)
+
+            schoolAccount = linkInfo[0] if len(linkInfo) > 0 else None
+
             if schoolInfo:
-                self.render('school.html', requests=requests, posts=posts, school_uuid = schoolInfo.uuid, school_code = school)
+                self.render('school.html', requests=requests, posts=posts, school_uuid = schoolInfo.uuid, school_code = school, schoolAccount = schoolAccount)
             else:
                 self.render("cloud.html", error="You don't belong to that school.")
 
         else:
             self.render("cloud.html", error="Please login before accessing cloud.")
-
-class Maintain(Handler):
-    def get(self):
-        user = self.getUserInfo()
-        school = self.request.get("s")
-        if user['user'] and user['userInfo']:
-            schoolInfo = SchoolAccount.getLinkSC(user['userInfo'].user_id, school)
-            users = SchoolAccount.query(SchoolAccount.school_uuid == schoolInfo.uuid).fetch()
-            usersInfo = []
-            for account in users:
-                usersInfo.append(Account.query(Account.user_id == account.user_id).fetch(1)[0])
-            if users:
-                self.render('cloud/maintain.html', users=usersInfo)
-        else:
-            self.render("cloud.html", error="You don't belong to that school.")
 
 class Send(Handler):
     def post(self):
@@ -101,5 +89,4 @@ app = webapp2.WSGIApplication([
     (static_location  + '/send', Send),
     (static_location + '/generateInvite', GenerateInvite),
     (static_location + '/join', Join),
-    (static_location + '/maintain', Maintain),
 ], debug=True)

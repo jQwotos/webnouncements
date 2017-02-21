@@ -22,7 +22,7 @@ class SchoolAccount(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add = True)
     user_id = ndb.StringProperty(required = True)
     school_uuid = ndb.StringProperty(required = True)
-    role = ndb.IntegerProperty()
+    role = ndb.StringProperty()
     @classmethod
     def getLinkSC(self, request_user, request_sc):
         linkQueryInfo = self.query(self.user_id == request_user).fetch()
@@ -31,7 +31,7 @@ class SchoolAccount(ndb.Model):
         if schoolInfo:
             for link in linkQueryInfo:
                 if link.school_uuid == schoolInfo.uuid:
-                    return schoolInfo
+                    return schoolInfo, linkQueryInfo
             return None
         else:
             return None

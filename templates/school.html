@@ -96,38 +96,28 @@
         </li>
       </ul>
     </div>
-    <div class="col s12">
+    <div class="col s6">
       <div class="collection">
-        <a class="collection-item white-text orange" href='/display/today?s={{school_uuid}}'>Create Display</a>
+        <a class="collection-item white-text orange" href='/display/today?s={{school_uuid}}'>Read Announcements</a>
       </div>
     </div>
-    <div class="col s6">
+    <div class="col s12 l6">
       <div class="collection">
         <a class="collection-item white-text orange" href='/submit?sc={{school_code}}'>Create Announcement</a>
       </div>
     </div>
-    <div class="col s6">
+
+    {% if schoolAccount.role == "admin" %}
+    <div class="col s12">
       <div class="collection">
-        <a class="collection-item white-text orange" id="generateInvite" schoolCode="{{school_uuid}}">Generate Invite Code</a>
+        <a class="collection-item white-text orange" href='/manage/main?sc={{school_code}}'>Manage</a>
       </div>
-      <p class="range-field">
-        <input type="range" id="numInvites" min="0" max="50" />
-      </p>
     </div>
-    <div id="inviteCodeModal" class="modal bottom-sheet">
-     <div class="modal-content">
-       <h4 id="inviteCodeText">Generating Code...</h4>
-     </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
 {% block scripts %}
-<script>
-$(document).ready(function(){
-  $('.collapsible').collapsible();
-  $('.modal').modal();
-});
-</script>
 <script>
 $(".action-btn").click(function(){
   var uuid = $(this).attr("postId");
@@ -141,23 +131,5 @@ $(".action-btn").click(function(){
   });
   $(this).parent().parent().parent().parent().parent().toggle();
 })
-</script>
-<script>
-$("#generateInvite").click(function(){
-  var uuid = $(this).attr("schoolCode");
-  var numInvites = $('#numInvites').val();
-  console.log(numInvites)
-  $.ajax({
-    type:"POST",
-    url: "/school/generateInvite",
-    dataType: "json",
-    data: JSON.stringify({"school_uuid": uuid,
-                          "numInvites": numInvites})
-  })
-    .done(function(data){
-      $("#inviteCodeText").text(data['code']);
-      $("#inviteCodeModal").modal("open");
-    });
-  })
 </script>
 {% endblock %}

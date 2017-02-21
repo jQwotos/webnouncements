@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}School{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col s12">
+      <table>
+        <thead>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Remove</th>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <th>{{user.name}}</th>
+            <th>{{user.role}}</th>
+            <th><button class="btn red removeUser" uuid="{{user.user_id}}">Remove</button></th>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col s6">
+      <div class="collection">
+        <a class="collection-item white-text orange" id="generateInvite" schoolCode="{{school_uuid}}">Generate Invite Code</a>
+      </div>
+      <p class="range-field">
+        <input type="range" id="numInvites" min="0" max="50" />
+      </p>
+    </div>
+    <div id="inviteCodeModal" class="modal bottom-sheet">
+       <div class="modal-content">
+         <h4 id="inviteCodeText">Generating Code...</h4>
+       </div>
+    </div>
+    <div id="errorModal" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h4 id="errorModalText"></h4>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+$(document).ready(function(){
+  $('.modal').modal();
+});
+</script>
+<script>
+$("#generateInvite").click(function(){
+  var uuid = $(this).attr("schoolCode");
+  var numInvites = $('#numInvites').val();
+  $.ajax({
+    type:"POST",
+    url: "/school/generateInvite",
+    dataType: "json",
+    data: JSON.stringify({"school_uuid": uuid,
+                          "numInvites": numInvites})
+  })
+    .done(function(data){
+      $("#inviteCodeText").text(data['code']);
+      $("#inviteCodeModal").modal("open");
+    });
+  })
+</script>
+<script>
+$(".removeUser").click(function(){
+  var uuid = $(this).attr("uuid");
+  var school_uuid = "{{school_uuid}}";
+  console.log("User " + uuid + " requested to remove.")
+  $.ajax({
+    type: "POST",
+    url: "/manage/delete",
+    dataType: "json",
+    data: JSON.stringify({"uuid": uuid, "school_uuid": school_uuid})
+  })
+    .done(function(data){
+      if (data['success'] == "true") {
+          $(this).parent().toggle();
+          Materialize.toast(data['message'], 4000);
+      } else {
+        $("#errorModalText").text("There was an error while trying to remove the member." + data['message']);
+        $("#errorModal").modal("open");
+      };
+    });
+});
+</script>
+{% endblock %}
