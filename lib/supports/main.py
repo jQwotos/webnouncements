@@ -17,14 +17,16 @@ class Handler(webapp2.RequestHandler):
     def respondToJson(self, json_data):
         self.response.out.write(json.dumps((json_data)))
 
-    def getUserInfo(self, query_database=True):
+    def getUserInfo(self, query_database=True, result=False):
         user = users.get_current_user()
         if user:
             if query_database:
                 userQueryData = Account.query(Account.user_id == user.user_id()).fetch()
                 userInfo = userQueryData[0] if len(userQueryData) > 0 else None
-                return {'user': user,
-                        'userInfo': userInfo}
+                self.userInfo{'user': user,
+                                'userInfo': userInfo}
+                if result:
+                    return self.userInfo
             else:
                 return {'user': user}
         else:

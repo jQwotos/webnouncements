@@ -1,11 +1,14 @@
-import webapp2, json
+import logging
+import json
+from uuid import uuid4
 
-from ..supports.main import Handler
-from ..supports.tables import Account, School, Post, SchoolAccount
+import webapp2
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
-from uuid import uuid4
+
+from ..supports.main import Handler
+from ..supports.tables import Account, School, Post, SchoolAccount
 
 static_location = '/cloud'
 
@@ -18,11 +21,12 @@ def registerNewUser(user):
 
     account.put()
 
+    logging.info("The user account '%s' was created with id '%s'." % (account.name, account.user_id))
+
 # Approve submissions
 class Approve(Handler):
     def get(self):
-        if not self.userInfo:
-            self.getUserInfo()
+        if not self.userInfo: self.getUserInfo()
 
         if self.userInfo:
             post = Post.query(Post.school_uuid == userInfo.school_uuid, Post.approved == False, limit=50).fetch()
@@ -34,7 +38,7 @@ class Approve(Handler):
         data = json.loads(self.request.body)
         postQueryData = Post.query(Post.uuid == data['uuid'])
         post = postQueryData[0] if len(postQueryData) > 0 else None
-
+        logging.info("Post '' was ")
         if post.school_uuid == self.userInfo.school_uuid and post:
             post.denied = True if data['action'] == 'deny' else False
             post.approved = True if data['action'] == 'approve' else False
@@ -72,9 +76,9 @@ class GenerateSchool(Handler):
             self.render("login.html", error="Please login before generating school.")
 
     def post(self):
-        user = self.getUserInfo()
-        if user['user']:
-            if user['userInfo']:
+        if not self.userInfo: self.getUserInfo()
+        if self.userInfo['user']:
+            if self.userInfo['userInfo']:
                 school_code = self.request.get("sc")
                 data = {
                     "uuid": str(uuid4()),
@@ -92,7 +96,7 @@ class GenerateSchool(Handler):
                     )
                     school.put()
                     schoolAccount = SchoolAccount(
-                        user_id = user['userInfo'].user_id,
+                        user_id = self.userInfo['userInfo'].user_id,
                         school_uuid = data['uuid'],
                         role = "admin"
                     )
