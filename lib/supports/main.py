@@ -14,6 +14,7 @@ template_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 class Handler(webapp2.RequestHandler):
+    self.userInfo = {}
     def respondToJson(self, json_data):
         self.response.out.write(json.dumps((json_data)))
 
@@ -23,7 +24,7 @@ class Handler(webapp2.RequestHandler):
             if query_database:
                 userQueryData = Account.query(Account.user_id == user.user_id()).fetch()
                 userInfo = userQueryData[0] if len(userQueryData) > 0 else None
-                self.userInfo{'user': user,
+                self.userInfo = {'user': user,
                                 'userInfo': userInfo}
                 if result:
                     return self.userInfo

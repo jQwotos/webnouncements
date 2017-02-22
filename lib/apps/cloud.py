@@ -48,10 +48,10 @@ class Approve(Handler):
 
 class Cloud(Handler):
     def get(self):
-        user = self.getUserInfo()
-        if user['user']:
-            if user['user'] and user['userInfo']:
-                schools = SchoolAccount.query(SchoolAccount.user_id == user['userInfo'].user_id).fetch()
+        if not self.userInfo: self.getUserInfo()
+        if self.userInfo['user']:
+            if self.userInfo['user'] and self.userInfo['userInfo']:
+                schools = SchoolAccount.query(SchoolAccount.user_id == self.userInfo['userInfo'].user_id).fetch()
                 updatedSchools = []
                 for school in schools:
                     schoolInfo = School.query(School.uuid == school.school_uuid).fetch(1)[0]
@@ -63,7 +63,7 @@ class Cloud(Handler):
             else:
                 self.render("cloud.html")
             user = self.getUserInfo()
-            if not user['userInfo']:
+            if not self.userInfo['userInfo']:
                 registerNewUser(users.get_current_user())
         else:
             self.render("login.html", error="Please login before accessing cloud.")
