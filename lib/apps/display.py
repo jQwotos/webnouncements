@@ -4,6 +4,7 @@ import webapp2
 
 from ..supports.main import Handler
 from ..supports.tables import Post
+from ..supports.constants import time_delta
 
 static_location = '/display'
 '''
@@ -20,6 +21,7 @@ class Display(Handler):
 class Today(Handler):
     def get(self):
         today = datetime.datetime.now().date()
+        today += datetime.timedelta(hours=time_delta)
         school = self.request.get('s')
         posts = Post.query(Post.school_uuid == school, Post.approved == True).filter(Post.startDate <= today).fetch()
         for post in list(posts):
