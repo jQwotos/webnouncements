@@ -5,11 +5,12 @@ from datetime import datetime, timedelta
 
 import webapp2
 from google.appengine.ext import ndb
+from google.appengine.api import users
 
 
 from ..supports.main import Handler
 from ..supports.tables import School, Post, SchoolAccount
-from ..supports.tabler import verifyLink
+from ..supports.constants import time_delta
 
 static_location = '/submit'
 submit_html = "submit/submit.html"
@@ -61,21 +62,21 @@ class Submit(Handler):
             self.render(submit_html, data = data, error = error)
         # If no error has occured, then query the for the school and create a post
         else:
-            user = self.getUserInfo()
+            user = users.get_current_user()
             approved = False
             submitterName = "Anonymous"
-            if user and 'userInfo' in user:
-                if verifyLink(user['userInfo'].user_id, schoolInfo.uuid):
+            if user:
+                if SchoolAccount.verifyLink(user.user_id(), schoolInfo.uuid):
                     approved = True
-                    submitterName = user['userInfo'].name
+                    submitterName = user.nickname()
 
             if schoolInfo:
                 post = Post(
                     uuid = str(uuid4()),
                     title = data['title'],
                     text = data['text'],
-                    startDate = data['startDate'],
-                    endDate = data['endDate'],
+                    startDate = data['startDate'] + timedelta(hours=time_delta),
+                    endDate = data['endDate'] + timedelta(hours=time_delta),
                     school_uuid = schoolInfo.uuid,
                     approved = approved,
                     denied = False,

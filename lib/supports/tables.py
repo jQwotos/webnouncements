@@ -35,6 +35,10 @@ class SchoolAccount(ndb.Model):
             return None
         else:
             return None
+    @classmethod
+    def verifyLink(self, request_user, request_school):
+        return True if len(self.query(SchoolAccount.user_id == request_user, self.school_uuid == request_school).fetch()) > 0 else False
+
 
 # ndb Post Entity
 class Post(ndb.Model):

@@ -15,33 +15,27 @@ static_location = '/school'
 
 class School(Handler):
     def get(self):
-        if not "userInfo" in locals(): self.getUserInfo()
-
+        user = users.get_current_user()
         school = self.request.get("s")
-        if self.userInfo['user'] and self.userInfo['userInfo']:
-            schoolInfo, linkInfo = SchoolAccount.getLinkSC(self.userInfo['userInfo'].user_id, school)
+        schoolInfo, linkInfo = SchoolAccount.getLinkSC(user.user_id(), school)
 
-            schoolAccount = linkInfo[0] if len(linkInfo) > 0 else None
+        schoolAccount = linkInfo[0] if len(linkInfo) > 0 else None
 
-            if schoolInfo:
-                self.render('school.html', school_uuid = schoolInfo.uuid, school_code = school, schoolAccount = schoolAccount)
-            else:
-                logging.warning("User '%s' tried to access '%s' without having permissions." % (self.userInfo['userInfo'].user_id, schoolInfo.uuid))
-                self.render("cloud.html", error="You don't belong to that school.")
-
+        if schoolInfo:
+            self.render('school.html', school_uuid = schoolInfo.uuid, school_code = school, schoolAccount = schoolAccount)
         else:
-            logging.warning("User tried to access cloud without being signed in.")
-            self.render("cloud.html", error="Please login before accessing cloud.")
+            logging.warning("User '%s' tried to access '%s' without having permissions." % (user.user_id(), schoolInfo.uuid))
+            self.render("cloud.html", error="You don't belong to that school.")
 
 class Send(Handler):
     def post(self):
-        if not "userInfo" in locals(): self.getUserInfo()
+        user = users.get_current_user()
 
         data = json.loads(self.request.body)
         postQueryInfo = Post.query(Post.uuid == data['uuid']).fetch()
         post = postQueryInfo[0] if len(postQueryInfo) > 0 else None
 
-        if SchoolAccount.verifyLink(self.userInfo['userInfo'].user_id, post.school_uuid):
+        if SchoolAccount.verifyLink(user.user_id(), post.school_uuid):
             if data['action'] == 'deny':
                 post.approved = False
                 post.denied = True
@@ -53,15 +47,15 @@ class Send(Handler):
 
 class GenerateInvite(Handler):
     def post(self):
+        user = users.get_current_user()
         data = json.loads(self.request.body)
-        if not "userInfo" in locals(): self.getUserInfo()
 
-        if SchoolAccount.verifyLink(self.userInfo['userInfo'].user_id, data['school_uuid']):
+        if SchoolAccount.verifyLink(user.user_id(), data['school_uuid']):
             code = str(uuid4())
             invite = Invite(
                 uuid = code,
                 school_uuid = data['school_uuid'],
-                createdBy = self.userInfo['userInfo'].user_id,
+                createdBy = user.user_id(),
                 uses = int(data['numInvites']),
             )
             invite.put()
@@ -69,16 +63,16 @@ class GenerateInvite(Handler):
 
 class Join(Handler):
     def post(self):
-        if not "userInfo" in locals(): self.getUserInfo()
+        user = users.get_current_user()
         inviteCode = self.request.get('ic')
 
         inviteQueryInfo = Invite.query(Invite.uuid == inviteCode).fetch()
         inviteInfo = inviteQueryInfo[0] if len(inviteQueryInfo) > 0 else None
 
         if inviteInfo and inviteInfo.uses > 0:
-            if not SchoolAccount.verifyLink(self.userInfo['userInfo'].user_id, inviteInfo.school_uuid):
+            if not SchoolAccount.verifyLink(user.user_id(), inviteInfo.school_uuid):
                 schoolAccount = SchoolAccount(
-                    user_id = self.userInfo['userInfo'].user_id,
+                    user_id = user.user_id(),
                     school_uuid = inviteInfo.school_uuid,
                 )
                 inviteInfo.uses -= 0

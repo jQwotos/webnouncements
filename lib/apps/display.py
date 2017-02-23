@@ -21,7 +21,6 @@ class Display(Handler):
 class Today(Handler):
     def get(self):
         today = datetime.datetime.now().date()
-        today += datetime.timedelta(hours=time_delta)
         school = self.request.get('s')
         posts = Post.query(Post.school_uuid == school, Post.approved == True).filter(Post.startDate <= today).fetch()
         for post in list(posts):

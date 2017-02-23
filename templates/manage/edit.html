@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Submit{% endblock %}
+{% block content %}
+<div class="row">
+  {% include "error.html" %}
+  <form method="post" class="col s12">
+    <div class="row">
+      <div class="input-field col s12">
+        <input name="title" type="text" id="title" value="{{post.title}}" required/>
+        <label for="title">Title</label>
+      </div>
+      <div class="input-field col s12">
+        <textarea id="text" class="materialize-textarea" name="text" required>{{post.text}}</textarea>
+        <label for="text">Text</label>
+      </div>
+      <div class="col s12">
+        <div class="card">
+          <div class="row">
+            <div class="card-content">
+              <span class="card-title">Display Announcement on</span>
+              <div class="input-field col s6">
+                <input type="date" class="datepicker" name="startDate" id="startDate" required/>
+                <label for="startDate">Start Date</label>
+              </div>
+              <div class="input-field col s6">
+                <input type="date" class="datepicker" name="endDate" id="endDate" required/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" value="{{post.uuid}}" name="post_uuid" />
+      <button class="btn submit">Update</button>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+$('.datepicker').pickadate({
+  selectMonths: true,
+  selectYears: 0,
+  closeOnSelect: true,
+});
+$("#startDate").pickadate('picker').set('select', "{{startDate}}");
+$("#endDate").pickadate('picker').set('select', "{{endDate}}");
+</script>
+{% endblock %}

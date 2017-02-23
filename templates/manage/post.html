@@ -32,9 +32,14 @@
                       </div>
                       {{post.text}}
                       <div class="row">
-                        <div class="col s12">
+                        <div class="col s6">
                           <div class="collection">
                             <a class="red collection-item white-text action-btn" action="deny" postId="{{post.uuid}}" style="cursor:pointer">Remove</a>
+                          </div>
+                        </div>
+                        <div class="col s6">
+                          <div class="collection">
+                            <a class="orange collection-item white-text edit-btn" href="/manage/edit?pid={{post.uuid}}&sid={{school_uuid}}" style="cursor:pointer">Edit</a>
                           </div>
                         </div>
                       </div>
@@ -74,14 +79,19 @@
                       </div>
                       {{post.text}}
                       <div class="row">
-                        <div class="col s6">
+                        <div class="col s4">
                           <div class="collection">
                             <a class="red collection-item white-text action-btn" action="deny" postId="{{post.uuid}}" style="cursor:pointer">Deny</a>
                           </div>
                         </div>
-                        <div class="col s6">
+                        <div class="col s4">
                           <div class="collection">
                             <a class="green collection-item white-text action-btn" action="approve" postId="{{post.uuid}}" style="cursor:pointer">Approve</a>
+                          </div>
+                        </div>
+                        <div class="col s4">
+                          <div class="collection">
+                            <a class="orange collection-item white-text edit-btn" href="/manage/edit?pid={{post.uuid}}&sid={{school_uuid}}" style="cursor:pointer">Edit</a>
                           </div>
                         </div>
                       </div>

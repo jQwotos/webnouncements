@@ -7,17 +7,21 @@ handlers:
   script: lib.apps.display.app
 - url: /account/.*
   script: lib.apps.account.app
+  login: required
 - url: /submit
   script: lib.apps.submit.app
 - url: /cloud/.*
   script: lib.apps.cloud.app
+  login: required
 - url: /
   static_files: static/index.html
   upload: static/index.html
 - url: /school/.*
   script: lib.apps.school.app
+  login: required
 - url: /manage/.*
   script: lib.apps.manage.app
+  login: required
 - url: /.*
   static_files: static/404.html
   upload: static/404.html
