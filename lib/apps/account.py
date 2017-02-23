@@ -14,30 +14,28 @@ class Login(Handler):
 
 class Join(Handler):
     def post(self):
-        user = self.getUserInfo
-        if user:
-            data = json.loads(self.request.body)
-            inviteCode = data['inviteCode']
+        if not "userInfo" in locals(): self.getUserInfo()
 
-            inviteQueryInfo = Invite.query(Invite.uuid == inviteCode).fetch()
-            inviteInfo = inviteQueryInfo if len(inviteQueryInfo) > 0 else None
+        data = json.loads(self.request.body)
+        inviteCode = data['inviteCode']
 
-            if inviteInfo and len(School.query(School.uuid == inviteInfo.school_uuid)) > 0:
-                if inviteInfo.user_id:
-                    if inviteInfo.user_id == user.user_id():
-                        currentAddIn = SchoolAccount(
-                            user_id = user.user_id(),
-                            school_uuid = inviteInfo.school_uuid,
-                        )
-                    else:
-                        self.render('login.html', error="Sorry the account on the invitation doesn't match yours.")
-                else:
+        inviteQueryInfo = Invite.query(Invite.uuid == inviteCode).fetch()
+        inviteInfo = inviteQueryInfo if len(inviteQueryInfo) > 0 else None
+
+        if inviteInfo and len(School.query(School.uuid == inviteInfo.school_uuid)) > 0:
+            if inviteInfo.user_id:
+                if inviteInfo.user_id == user.user_id():
                     currentAddIn = SchoolAccount(
                         user_id = user.user_id(),
-                        school_uuid = inviteInfo.school_uuid(),
+                        school_uuid = inviteInfo.school_uuid,
                     )
-        else:
-            self.render('login.html')
+                else:
+                    self.render('login.html', error="Sorry the account on the invitation doesn't match yours.")
+            else:
+                currentAddIn = SchoolAccount(
+                    user_id = user.user_id(),
+                    school_uuid = inviteInfo.school_uuid(),
+                )
 
 # Old login system
 '''

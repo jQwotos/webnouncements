@@ -4,132 +4,29 @@
 <div class="container">
   <div class="row">
     <div class="col s12">
-      <ul class="collapsible popout" data-collapsible="accordion">
-        <li>
-          <div class="collapsible-header">Approved</div>
-          <div class="collapsible-body">
-            <div class="container">
-              <ul class="collapsible" data-collapsible="accordion">
-                {% for post in posts %}
-                  <li>
-                    <div class="collapsible-header truncate">
-                      {{post.title}}
-                    </div>
-                    <div class="collapsible-body">
-                      <div class="row">
-                        <div class="col s12 m6">
-                          <div class="card-panel">
-                            <div class="card-content">
-                              Created on {{post.created}} by {{post.submitterName}}
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col s12 m6">
-                          <div class="card-panel">
-                            <div class="card-content">
-                              Start Date {{post.startDate}} | End Date {{post.endDate}}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {{post.text}}
-                      <div class="row">
-                        <div class="col s12">
-                          <div class="collection">
-                            <a class="red collection-item white-text action-btn" action="deny" postId="{{post.uuid}}">Remove</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="collapsible-header">Pending</div>
-          <div class="collapsible-body">
-            <div class="container">
-              <ul class="collapsible" data-collapsible="accordion">
-                {% for post in requests %}
-                  <li>
-                    <div class="collapsible-header truncate">
-                      {{post.title}}
-                    </div>
-                    <div class="collapsible-body">
-                      <div class="row">
-                        <div class="col s12 m6">
-                          <div class="card-panel">
-                            <div class="card-content">
-                              Created on {{post.created}}
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col s12 m6">
-                          <div class="card-panel">
-                            <div class="card-content">
-                              Start Date {{post.startDate}} | End Date {{post.endDate}}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {{post.text}}
-                      <div class="row">
-                        <div class="col s6">
-                          <div class="collection">
-                            <a class="red collection-item white-text action-btn" action="deny" postId="{{post.uuid}}">Deny</a>
-                          </div>
-                        </div>
-                        <div class="col s6">
-                          <div class="collection">
-                            <a class="green collection-item white-text action-btn" action="approve" postId="{{post.uuid}}">Approve</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="col s6">
-      <div class="collection">
-        <a class="collection-item white-text orange" href='/display/today?s={{school_uuid}}'>Read Announcements</a>
+      <div class="card-panel purple small" id="createAnnouncement" style="cursor:pointer" onclick="redirect">
+        <div class="card-content white-text center-align">
+          <h4>Create an Announcement</h4>
+        </div>
       </div>
     </div>
-    <div class="col s12 l6">
-      <div class="collection">
-        <a class="collection-item white-text orange" href='/submit?sc={{school_code}}'>Create Announcement</a>
-      </div>
-    </div>
-
-    {% if schoolAccount.role == "admin" %}
     <div class="col s12">
       <div class="collection">
+        <a class="collection-item white-text orange" href='/display/today?s={{school_uuid}}'>Read Announcements</a>
+        <a class="collection-item white-text orange" href='/manage/post?sid={{school_uuid}}'>Manage / Edit Announcements</a>
+        {% if schoolAccount.role == "admin" %}
         <a class="collection-item white-text orange" href='/manage/main?sc={{school_code}}'>Manage</a>
+        {% endif %}
       </div>
     </div>
-    {% endif %}
   </div>
 </div>
 {% endblock %}
 {% block scripts %}
+
 <script>
-$(".action-btn").click(function(){
-  var uuid = $(this).attr("postId");
-  var action = $(this).attr("action");
-  $.ajax({
-    type:"POST",
-    url: "/school/send",
-    dataType: 'json',
-    data: JSON.stringify({'uuid': uuid,
-                          'action': action})
-  });
-  $(this).parent().parent().parent().parent().parent().toggle();
-})
+$("#createAnnouncement").click(function(){
+  window.location.href = '/submit?sc={{school_code}}'
+});
 </script>
 {% endblock %}

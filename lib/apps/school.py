@@ -15,19 +15,16 @@ static_location = '/school'
 
 class School(Handler):
     def get(self):
-        if not self.userInfo: self.getUserInfo()
+        if not "userInfo" in locals(): self.getUserInfo()
 
         school = self.request.get("s")
         if self.userInfo['user'] and self.userInfo['userInfo']:
-            today = datetime.datetime.now()
             schoolInfo, linkInfo = SchoolAccount.getLinkSC(self.userInfo['userInfo'].user_id, school)
-            requests = Post.query(Post.school_uuid == schoolInfo.uuid, Post.approved == False, Post.denied == False).order(-Post.startDate).fetch(50)
-            posts = Post.query(Post.school_uuid == schoolInfo.uuid, Post.approved == True, Post.endDate >= today).order(-Post.endDate).fetch(50)
 
             schoolAccount = linkInfo[0] if len(linkInfo) > 0 else None
 
             if schoolInfo:
-                self.render('school.html', requests=requests, posts=posts, school_uuid = schoolInfo.uuid, school_code = school, schoolAccount = schoolAccount)
+                self.render('school.html', school_uuid = schoolInfo.uuid, school_code = school, schoolAccount = schoolAccount)
             else:
                 logging.warning("User '%s' tried to access '%s' without having permissions." % (self.userInfo['userInfo'].user_id, schoolInfo.uuid))
                 self.render("cloud.html", error="You don't belong to that school.")
@@ -38,7 +35,7 @@ class School(Handler):
 
 class Send(Handler):
     def post(self):
-        if not self.userInfo: self.getUserInfo()
+        if not "userInfo" in locals(): self.getUserInfo()
 
         data = json.loads(self.request.body)
         postQueryInfo = Post.query(Post.uuid == data['uuid']).fetch()
@@ -57,7 +54,7 @@ class Send(Handler):
 class GenerateInvite(Handler):
     def post(self):
         data = json.loads(self.request.body)
-        if not self.userInfo: self.getUserInfo()
+        if not "userInfo" in locals(): self.getUserInfo()
 
         if SchoolAccount.verifyLink(self.userInfo['userInfo'].user_id, data['school_uuid']):
             code = str(uuid4())
@@ -72,7 +69,7 @@ class GenerateInvite(Handler):
 
 class Join(Handler):
     def post(self):
-        if not self.userInfo: self.getUserInfo()
+        if not "userInfo" in locals(): self.getUserInfo()
         inviteCode = self.request.get('ic')
 
         inviteQueryInfo = Invite.query(Invite.uuid == inviteCode).fetch()

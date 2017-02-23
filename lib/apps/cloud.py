@@ -26,7 +26,7 @@ def registerNewUser(user):
 # Approve submissions
 class Approve(Handler):
     def get(self):
-        if not self.userInfo: self.getUserInfo()
+        if not "userInfo" in locals(): self.getUserInfo()
 
         if self.userInfo:
             post = Post.query(Post.school_uuid == userInfo.school_uuid, Post.approved == False, limit=50).fetch()
@@ -48,7 +48,7 @@ class Approve(Handler):
 
 class Cloud(Handler):
     def get(self):
-        if not self.userInfo: self.getUserInfo()
+        if not "userInfo" in locals(): self.getUserInfo()
         if self.userInfo['user']:
             if self.userInfo['user'] and self.userInfo['userInfo']:
                 schools = SchoolAccount.query(SchoolAccount.user_id == self.userInfo['userInfo'].user_id).fetch()
@@ -70,13 +70,14 @@ class Cloud(Handler):
 
 class GenerateSchool(Handler):
     def get(self):
+        if not "userInfo" in locals(): self.getUserInfo()
         if self.getUserInfo(query_database=False):
             self.render("generateSchool.html")
         else:
             self.render("login.html", error="Please login before generating school.")
 
     def post(self):
-        if not self.userInfo: self.getUserInfo()
+        if not "userInfo" in locals(): self.getUserInfo()
         if self.userInfo['user']:
             if self.userInfo['userInfo']:
                 school_code = self.request.get("sc")
