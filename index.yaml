@@ -104,5 +104,14 @@ indexes:
 
 - kind: Post
   properties:
+  - name: approved
+  - name: school_uuid
+  - name: startDate
+    direction: desc
+  - name: created
+    direction: desc
+
+- kind: Post
+  properties:
   - name: school_uuid
   - name: startDate

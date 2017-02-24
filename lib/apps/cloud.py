@@ -46,7 +46,7 @@ class GenerateSchool(Handler):
         self.render("generateSchool.html")
 
     def post(self):
-        user = self.get_current_user()
+        user = users.get_current_user()
         school_code = self.request.get("sc")
         data = {
             "uuid": str(uuid4()),
