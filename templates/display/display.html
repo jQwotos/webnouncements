@@ -10,11 +10,35 @@
       </li>
       {% endfor %}
     </ul>
-    {% include '_includes/scripts.html' %}
     <div class="fixed-action-btn">
-      <a class="btn-floating btn-large orange" target="_blank" href="https://webnouncements-v2.appspot.com/submit?sc={{school_code}}">
+      <a class="btn-floating btn-large orange" target="_blank" href="https://webnouncements-v2.appspot.com/submit?sc={{school_code}}" title="Create Announcement">
         <i class="material-icons">playlist_add</i>
       </a>
     </div>
+    <div class="fixed-action-btn" style="left:24px;">
+      <a class="btn-floating btn-large orange" onclick="toggleAll()" title="Expand All">
+        <i class="material-icons">expand_more</i>
+      </a>
+    </div>
+    {% include '_includes/scripts.html' %}
+    <script>
+    // Event fire by Kooilnc http://stackoverflow.com/questions/2705583/how-to-simulate-a-click-with-javascript
+    function eventFire(el, etype){
+      if (el.fireEvent) {
+        el.fireEvent('on' + etype);
+      } else {
+        var evObj = document.createEvent('Events');
+        evObj.initEvent(etype, true, false);
+        el.dispatchEvent(evObj);
+      }
+    };
+    // End of Eventfire
+    function toggleAll(){
+      console.log("Activated");
+      $(".collapsible-header").each(function(){
+        eventFire(this, 'click');
+      });
+    };
+    </script>
   </body>
 </html>

@@ -13,10 +13,7 @@ class Login(Handler):
         self.render('login.html')
 
 class Join(Handler):
-    def post(self):
-        data = json.loads(self.request.body)
-        inviteCode = data['inviteCode']
-
+    def add(inviteCode):
         inviteQueryInfo = Invite.query(Invite.uuid == inviteCode).fetch()
         inviteInfo = inviteQueryInfo if len(inviteQueryInfo) > 0 else None
 
@@ -28,6 +25,19 @@ class Join(Handler):
             inviteInfo.uses -= 1
             inviteInfo.put()
             currentAddIn.put()
+
+    def get(self):
+        inviteCode = self.request.get("ic")
+        user = users.get_current_user()
+
+        if user:
+
+        else:
+            self.redirect(users.create_login_url('/cloud/main'))
+
+    def post(self):
+        data = json.loads(self.request.body)
+        self.add(data['inviteCode'])
 
 # Old login system
 '''

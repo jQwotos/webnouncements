@@ -32,6 +32,8 @@
     <div id="inviteCodeModal" class="modal bottom-sheet">
        <div class="modal-content">
          <h4 id="inviteCodeText">Generating Code...</h4>
+         <hr />
+         <h4 id="inviteCodeLink"></h4>
        </div>
     </div>
     <div id="errorModal" class="modal bottom-sheet">
@@ -61,6 +63,7 @@ $("#generateInvite").click(function(){
   })
     .done(function(data){
       $("#inviteCodeText").text(data['code']);
+      $("#inviteCodeLink").text("Direct link to automatically join https://webnouncements-v2.appspot.com/school/join?ic=" + data['code'])
       $("#inviteCodeModal").modal("open");
     });
   })

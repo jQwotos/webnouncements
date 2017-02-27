@@ -17,8 +17,6 @@ class Handler(webapp2.RequestHandler):
     def respondToJson(self, json_data):
         self.response.out.write(json.dumps((json_data)))
 
-    
-
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 

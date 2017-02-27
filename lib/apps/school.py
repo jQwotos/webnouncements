@@ -62,10 +62,8 @@ class GenerateInvite(Handler):
             self.respondToJson({'code': code})
 
 class Join(Handler):
-    def post(self):
+    def add(self, inviteCode):
         user = users.get_current_user()
-        inviteCode = self.request.get('ic')
-
         inviteQueryInfo = Invite.query(Invite.uuid == inviteCode).fetch()
         inviteInfo = inviteQueryInfo[0] if len(inviteQueryInfo) > 0 else None
 
@@ -79,6 +77,19 @@ class Join(Handler):
                 inviteInfo.put()
                 schoolAccount.put()
                 self.redirect('/cloud/main')
+
+    def get(self):
+        inviteCode = self.request.get('ic')
+        user = users.get_current_user()
+
+        if user:
+            self.add(inviteCode)
+        else:
+            self.redirect(users.create_login_url('%s/join?ic=%s' % (static_location, inviteCode)))
+    def post(self):
+        user = users.get_current_user()
+        inviteCode = self.request.get('ic')
+        self.add(inviteCode)
 
 app = webapp2.WSGIApplication([
     (static_location + '/main', School),
