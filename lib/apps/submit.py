@@ -83,7 +83,10 @@ class Submit(Handler):
                     submitterName = submitterName,
                 )
                 post.put()
-                self.redirect('/')
+                if user and approved:
+                    self.redirect('/school/main?s=%s' % (data['sc']))
+                else:
+                    self.redirect('/')
             else:
                 self.render(submit_html, error="Invalid school code", data = data)
 
