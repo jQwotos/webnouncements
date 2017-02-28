@@ -10,14 +10,14 @@
       </li>
       {% endfor %}
     </ul>
-    <div class="fixed-action-btn">
-      <a class="btn-floating btn-large orange" target="_blank" href="https://webnouncements-v2.appspot.com/submit?sc={{school_code}}" title="Create Announcement">
-        <i class="material-icons">playlist_add</i>
+    <div class="fixed-action-btn" style="left:24px;">
+      <a class="btn-floating btn-large orange" onClick="toggleAll()" title="Expand All">
+        <i class="material-icons">expand_more</i>
       </a>
     </div>
-    <div class="fixed-action-btn" style="left:24px;">
-      <a class="btn-floating btn-large orange" onclick="toggleAll()" title="Expand All">
-        <i class="material-icons">expand_more</i>
+    <div class="fixed-action-btn">
+      <a class="btn-floating btn-large orange" target="_blank" href="/submit?sc={{school_code}}">
+        <i class="material-icons">playlist_add</i>
       </a>
     </div>
     {% include '_includes/scripts.html' %}
