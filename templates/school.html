@@ -13,6 +13,7 @@
     <div class="col s12">
       <div class="collection">
         <a class="collection-item white-text orange" href='/display/today?s={{school_uuid}}'>Read Announcements</a>
+        <a class="collection-item white-text orange" href="/display/print?s={{school_uuid}}">Print Announcements</a>
         <a class="collection-item white-text orange" href='/manage/post?sid={{school_uuid}}'>Manage / Edit Announcements</a>
         {% if schoolAccount.role == "admin" %}
         <a class="collection-item white-text orange" href='/manage/main?sc={{school_code}}'>Manage</a>

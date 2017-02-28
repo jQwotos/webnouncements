@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    {% include '_includes/head.html' %}
+    <div class="row">
+      {% for post in posts %}
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <p>
+              <b>{{post.title}}</b>
+            </p>
+            <p>{{post.text}}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% include '_includes/scripts.html' %}
+    <script>
+    $(document).ready(window.print())
+    </script>
+  </body>
+</html>

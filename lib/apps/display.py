@@ -24,6 +24,20 @@ class Today(Handler):
 
         self.renderBlank('display/display.html', posts = posts, school_code=schoolCode)
 
+class Print(Handler):
+    def get(self):
+        today = datetime.datetime.now().date()
+        school = self.request.get('s')
+        posts = Post.query(Post.school_uuid == school, Post.approved == True, Post.startDate <= today).fetch()
+
+        schoolQueryInfo = School.query(School.uuid == school).fetch()
+        schoolCode = schoolQueryInfo[0].school_code if len(schoolQueryInfo) > 0 else None
+        for post in list(posts):
+            if not post.endDate >= today:
+                posts.remove(post)
+
+        self.renderBlank('display/print.html', posts = posts, school_code=schoolCode)
+
 class Read(Handler):
     def get(self):
         today = datetime.datetime.now().date()
@@ -37,5 +51,6 @@ class Read(Handler):
 
 app = webapp2.WSGIApplication([
     (static_location + '/read', Read),
-    (static_location + '/today', Today)
+    (static_location + '/today', Today),
+    (static_location + '/print', Print),
 ], debug=True)
