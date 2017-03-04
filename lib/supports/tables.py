@@ -48,6 +48,8 @@ class Post(ndb.Model):
     # When to display and what to display
     startDate = ndb.DateProperty(required = True)
     endDate = ndb.DateProperty(required = True)
+    readStartDate = ndb.DateProperty()
+    readEndDate = ndb.DateProperty()
     title = ndb.TextProperty(required = True)
     text = ndb.TextProperty()
 

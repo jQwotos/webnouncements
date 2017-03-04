@@ -6,47 +6,71 @@
   <div class="col s12 center-align">
     <h4>{{school_name}}</h4>
   </div>
-  <form method="post" class="col s12">
+  <form method="post" action="{{link}}" class="col s12">
     <div class="row">
       <div class="input-field col s12">
         <input name="sc" type="text" id="sc" value="{{school_code}}" required/>
         <label for="sc">School Code</label>
       </div>
       <div class="input-field col s12">
-        <input name="title" type="text" id="title" required/>
+        <input name="title" type="text" id="title" value="{{title}}" required/>
         <label for="title">Title</label>
       </div>
       <div class="input-field col s12">
-        <textarea id="text" class="materialize-textarea" name="text" required></textarea>
+        <textarea id="text" class="materialize-textarea" name="text" required>{{text}}</textarea>
         <label for="text">Text</label>
       </div>
       <div class="col s12">
         <div class="card">
           <div class="row">
             <div class="card-content">
-              <span class="card-title">Display Announcement on</span>
-              <div class="input-field col s6">
-                <input type="date" class="datepicker" name="startDate" id="startDate" required/>
-                <label for="startDate">Start Date</label>
-              </div>
-              <div class="input-field col s6">
-                <input type="date" class="datepicker" name="endDate" id="endDate"required/>
-                <label for="endDate">End Date</label>
-              </div>
+              <input id="date" class="daterangepicker" size="60" placeholder="Display On" name="date" value="{{date}}" required/>
+                <input id="readDate" class="daterangepicker" size="60" placeholder="Read over PA on" name="readDate" value="{{readDate}}" initialized="false"/>
+                <!-- <button id="clearReadDate" class="btn" type="button">Clear</button> -->
             </div>
           </div>
         </div>
       </div>
+      <input type="hidden" name="pid" value="{{postID}}" />
       <button class="btn submit">Submit</button>
   </form>
 </div>
 {% endblock %}
 {% block scripts %}
 <script>
-$('.datepicker').pickadate({
-  selectMonths: true,
-  selectYears: 0,
+function initRead(){
+  var date = $("#date").val()
+  var startDate = date.match(/^(.*)\sto/)[1];
+  var endDate = date.match(/\s(.*)$/)[0];
+  $("#readDate").dateRangePicker({
+    autoClose: true,
+    startDate: startDate,
+    endDate: endDate,
+  })
+}
+
+$(document).ready(function(){
+  if ($('#date').val() != "" && $('#readDate').attr('initialized') == "false") {
+    initRead();
+  };
+})
+
+
+</script>
+<script>
+$('#date').dateRangePicker({
+  autoClose: true,
+  startDate: new Date(),
+  customCloseAnimation: function(cb){
+    $(this).fadeOut(300, cb);
+    initRead();
+  }
 });
-$("#startDate").pickadate('picker').set('select', new Date());
+</script>
+
+<script>
+$("#clearReadDate").click(function(){
+  $("#readDate").value = "";
+})
 </script>
 {% endblock %}

@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 import webapp2
 
@@ -35,6 +36,10 @@ class Print(Handler):
         for post in list(posts):
             if not post.endDate >= today:
                 posts.remove(post)
+
+        for post in posts:
+            if post.readStartDate and post.readEndDate and post.readStartDate <= today and post.readEndDate >= today:
+                post.star = True
 
         self.renderBlank('display/print.html', posts = posts, school_code=schoolCode)
 

@@ -22,6 +22,10 @@ handlers:
 - url: /manage/.*
   script: lib.apps.manage.app
   login: required
+- url: /css
+  static_dir: css
+- url: /js
+  static_dir: js
 - url: /.*
   static_files: static/404.html
   upload: static/404.html
