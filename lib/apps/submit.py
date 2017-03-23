@@ -16,9 +16,6 @@ from ..supports.constants import time_delta
 static_location = '/submit'
 submit_html = "submit/submit.html"
 badsubmit_html = "submit/badsubmission.html"
-#dateTimePattern = '%Y-%m-%d'
-#startDatePattern = r'(.*?)\s'
-#endDatePattern = r'to\s(.*?)$'
 
 # Handles submission
 class Submit(Handler):
@@ -41,6 +38,7 @@ class Submit(Handler):
             self.render(badsubmit_html, error="No school code provided")
 
     def post(self):
+        # Goto ..supports.dater for more information on poster
         poster(self, new = True)
 
 app = webapp2.WSGIApplication([

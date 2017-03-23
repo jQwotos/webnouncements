@@ -28,6 +28,7 @@ def poster(self, new = True):
         "readEndDate": None,
     }
 
+    # Try and get the read dates
     try:
         data['readStartDate'] = datetime.strptime(self.request.get('readStartDate'), dateTimePattern)
         data['readEndDate'] = datetime.strptime(self.request.get('readEndDate'), dateTimePattern)
@@ -40,12 +41,14 @@ def poster(self, new = True):
         if data[item] == "":
             error += ("Please fill out %s\n" % (item))
 
+    # Query the details of the school
     schoolQueryInfo = School.query(School.school_code == data["sc"]).fetch()
     schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
-
+    # Error out if the school doesn't exist
     if not schoolInfo:
         error += "Invalid school code \n"
 
+    # If there are no errors then proceed
     if error != "":
         self.render(submit_html, data = data, error = error)
     # If no error has occured, then query the for the school and create a post
@@ -53,14 +56,20 @@ def poster(self, new = True):
         user = users.get_current_user()
         approved = False
         submitterName = "Anonymous"
+        # If the person is logged in
         if user:
+            # If the person's account is linked to the school then auto approve and change submitterName to their nick
             if SchoolAccount.verifyLink(user.user_id(), schoolInfo.uuid):
                 approved = True
                 submitterName = user.nickname()
 
+        # Checks if the school info is valid
         if schoolInfo:
+            # Compensate for ETC times
             data['startDate'] = data['startDate'] + timedelta(hours=time_delta)
             data['endDate'] = data['endDate'] + timedelta(hours=time_delta)
+
+            # If the post is NEW and not being edited then use this schema
             if new:
                 post = Post(
                     uuid = str(uuid4()),
@@ -79,6 +88,7 @@ def poster(self, new = True):
                 else:
                     logging.info("No read start or end date was provided for post.")
                 post.put()
+            # If the post is OLD and being edited then use this schema
             else:
                 postID = self.request.get("pid")
                 logging.info("Updating post rather than creating a new one for %s." % (postID))
@@ -96,8 +106,10 @@ def poster(self, new = True):
 
                     post.put()
 
+            # If the post was auto approved, redirect the user back to the school page
             if user and approved:
                 self.redirect('/school/main?s=%s' % (data['sc']))
+            # Otherwise bring them back to the home page of webnouncements
             else:
                 self.redirect('/')
         else:

@@ -108,29 +108,7 @@ class EditPost(Handler):
 
     def post(self):
         poster(self, new = False)
-        '''
-        user = users.get_current_user()
-        data = {
-            "title": self.request.get("title"),
-            "text": self.request.get("text"),
-            "startDate": datetime.strptime(self.request.get("startDate"), '%d %B, %Y'),
-            "endDate": datetime.strptime(self.request.get("endDate"), '%d %B, %Y'),
-            "post_uuid": self.request.get("post_uuid"),
-        }
 
-        postQueryInfo = Post.query(Post.uuid == data['post_uuid']).fetch()
-        post = postQueryInfo[0] if len(postQueryInfo) > 0 else None
-
-        if post and SchoolAccount.verifyLink(user.user_id(), post.school_uuid):
-            post.title = data['title']
-            post.text = data['text']
-            post.startDate = data['startDate']
-            post.endDate = data['endDate']
-
-            post.put()
-
-            self.redirect(static_location + '/post?sid=%s' % (post.school_uuid))
-        '''
 app = webapp2.WSGIApplication([
     (static_location + '/main', Manage),
     (static_location + '/delete', DeleteUser),
