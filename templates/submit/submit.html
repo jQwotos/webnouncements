@@ -6,7 +6,7 @@
   <div class="col s12 center-align">
     <h4>{{school_name}}</h4>
   </div>
-  <form method="post" action="{{link}}" class="col s12">
+  <form method="post" action="{{link}}" class="col s12" id="form">
     <div class="row">
       <div class="input-field col s12">
         <input name="sc" type="text" id="sc" value="{{school_code}}" required/>
@@ -23,10 +23,33 @@
       <div class="col s12">
         <div class="card">
           <div class="row">
+            <div class="card-content" id="read">
+              <h5>Display on:</h5>
+              <div class="input-field col s6">
+                <input type="date" id="startDate" name="startDate" class="datepicker" required/>
+                <label for="startDate">Start Date</label>
+              </div>
+              <div class="input-field col s6">
+                <input type="date" name="endDate" class="datepicker" id="endDate" required/>
+                <label for="startDate">End Date</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s12" id="readDate">
+        <div class="card">
+          <div class="row">
             <div class="card-content">
-              <input id="date" class="daterangepicker" size="60" placeholder="Display On" name="date" value="{{date}}" required/>
-                <input id="readDate" class="daterangepicker" size="60" placeholder="Read over PA on" name="readDate" value="{{readDate}}" initialized="false"/>
-                <!-- <button id="clearReadDate" class="btn" type="button">Clear</button> -->
+              <h5>Read on:</h5>
+              <div class="input-field col s6">
+                <input type="date" id="readStartDate" name="readStartDate" class="datepicker" data-changed="false"/>
+                <label for="startDate">Start Date</label>
+              </div>
+              <div class="input-field col s6">
+                <input type="date" name="readEndDate" class="datepicker" id="readEndDate"/>
+                <label for="startDate">End Date</label>
+              </div>
             </div>
           </div>
         </div>
@@ -38,39 +61,56 @@
 {% endblock %}
 {% block scripts %}
 <script>
-function initRead(){
-  var date = $("#date").val()
-  var startDate = date.match(/^(.*)\sto/)[1];
-  var endDate = date.match(/\s(.*)$/)[0];
-  $("#readDate").dateRangePicker({
-    autoClose: true,
-    startDate: startDate,
-    endDate: endDate,
-  })
-}
+$("#startDate").pickadate({
+  selectMonths: true,
+  selectYears: false,
+  min: new Date(),
+  closeOnClear: true,
+  onSet: function(arg){
+    if ('select' in arg){
+      this.close();
+      console.log("Start date set to ", $("#startDate").val());
+      $('#endDate').pickadate('picker').set('min', $('#startDate').val());
+      $('#readStartDate').val($('#startDate').val());
+    };
+  }
+});
 
-$(document).ready(function(){
-  if ($('#date').val() != "" && $('#readDate').attr('initialized') == "false") {
-    initRead();
-  };
-})
+$("#endDate").pickadate({
+  selectMonths: true,
+  selectYears: false,
+  closeOnClear: true,
+  onSet: function(arg){
+    if ('select' in arg){
+      this.close();
+      $('#readEndDate').val($('#endDate').val());
+    };
+  }
+});
 
-
-</script>
-<script>
-$('#date').dateRangePicker({
-  autoClose: true,
-  startDate: new Date(),
-  customCloseAnimation: function(cb){
-    $(this).fadeOut(300, cb);
-    initRead();
+$(".datepicker").pickadate({
+  selectMonths: true,
+  selectYears: false,
+  onSet: function(arg){
+    if ('select' in arg){
+      this.close();
+    }
   }
 });
 </script>
-
 <script>
-$("#clearReadDate").click(function(){
-  $("#readDate").value = "";
-})
+$("#form").submit(function(){
+  if ($("#startDate").val() == "" || $("endDate").val() == ""){
+    console.log("BROKEN ENTRY")
+    Materialize.toast('Please fill in read or end date values', 4000);
+    return false;
+  }
+});
+</script>
+<script>
+$("#startDate").pickadate('picker').set("select", "{{startDate}}")
+$("#endDate").pickadate('picker').set("select", "{{endDate}}")
+$("#readStartDate").pickadate('picker').set("select", "{{readStartDate}}")
+$("#readEndDate").pickadate('picker').set("select", "{{readEndDate}}")
 </script>
 {% endblock %}

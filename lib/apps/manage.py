@@ -11,7 +11,7 @@ from google.appengine.api import users
 from ..supports.dater import poster
 from ..supports.main import Handler
 from ..supports.tables import Post, SchoolAccount, Invite, School, Account
-from ..supports.constants import time_delta
+from ..supports.constants import time_delta, dateTimePattern, dateConvertPattern
 
 static_location = '/manage'
 
@@ -83,14 +83,28 @@ class EditPost(Handler):
         post = postQueryInfo[0] if len(postQueryInfo) > 0 else None
 
         if post and SchoolAccount.verifyLink(user.user_id(), schoolID):
-            date = str(post.startDate) + ' to ' + str(post.endDate)
-            logging.info("Start read date %s" % (post.readStartDate))
-            readDate = str(post.readStartDate) + ' to ' + str(post.readEndDate) if post.readStartDate and post.readEndDate else ""
-            logging.info("Read date: %s" % (readDate))
             schoolQueryInfo = School.query(School.uuid == post.school_uuid).fetch()
             schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
             if schoolInfo:
-                self.render("submit/submit.html", school_code = schoolInfo.school_code, title=post.title, text=post.text, date=date, readDate=readDate, link=static_location + '/edit', postID = post.uuid)
+                '''
+                startDate = datetime.strftime(dateTimePattern, datetime.strptime(post.startDate, dateConvertPattern)),
+                endDate = datetime.strftime(dateTimePattern, datetime.strptime(post.endDate, dateConvertPattern)),
+                readStartDate = datetime.strftime(dateTimePattern, datetime.strptime(post.readStartDate, dateConvertPattern)),
+                readEndDate = datetime.strftime(dateTimePattern, datetime.strptime(post.readEndDate, dateConvertPattern)),
+                '''
+                logging.info("OVER HERE")
+                logging.info(type(post.startDate))
+                self.render("submit/submit.html",
+                                school_code = schoolInfo.school_code,
+                                title=post.title,
+                                text=post.text,
+                                startDate = post.startDate.strftime(dateTimePattern),
+                                endDate = datetime.strftime(post.endDate, dateTimePattern),
+                                readStartDate = datetime.strftime(post.readStartDate, dateTimePattern) if post.readStartDate else None,
+                                readEndDate = datetime.strftime(post.readEndDate, dateTimePattern) if post.readEndDate else None,
+                                link=static_location + '/edit',
+                                postID = post.uuid,
+                            )
 
     def post(self):
         poster(self, new = False)

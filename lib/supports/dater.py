@@ -10,14 +10,11 @@ from google.appengine.api import users
 
 from ..supports.main import Handler
 from ..supports.tables import School, Post, SchoolAccount
-from ..supports.constants import time_delta
+from ..supports.constants import time_delta, dateTimePattern
 
 static_location = '/submit'
 submit_html = "submit/submit.html"
 badsubmit_html = "submit/badsubmission.html"
-dateTimePattern = '%Y-%m-%d'
-startDatePattern = r'(.*?)\s'
-endDatePattern = r'to\s(.*?)$'
 
 def poster(self, new = True):
     # Retrieve data from form
@@ -25,19 +22,15 @@ def poster(self, new = True):
         "sc": self.request.get("sc"),
         "title": self.request.get("title"),
         "text": self.request.get("text"),
-        "startDate": datetime.strptime(str(re.findall(startDatePattern, self.request.get('date'))[0]), dateTimePattern),
-        "endDate": datetime.strptime(str(re.findall(endDatePattern, self.request.get('date'))[0]), dateTimePattern),
+        "startDate": datetime.strptime(self.request.get('startDate'), dateTimePattern),
+        "endDate": datetime.strptime(self.request.get('endDate'), dateTimePattern),
         "readStartDate": None,
         "readEndDate": None,
     }
 
     try:
-        readDate = self.request.get('readDate')
-        data['readStartDate'] = str(re.findall(startDatePattern, readDate)[0])
-
-        data['readEndDate'] = str(re.findall(endDatePattern, readDate)[0])
-        data['readStartDate'] = datetime.strptime(data['readStartDate'], dateTimePattern)
-        data['readEndDate'] = datetime.strptime(data['readEndDate'], dateTimePattern)
+        data['readStartDate'] = datetime.strptime(self.request.get('readStartDate'), dateTimePattern)
+        data['readEndDate'] = datetime.strptime(self.request.get('readEndDate'), dateTimePattern)
     except:
         logging.info("No read date was provided for announcement.")
 
