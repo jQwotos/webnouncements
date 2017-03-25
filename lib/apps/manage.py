@@ -86,14 +86,6 @@ class EditPost(Handler):
             schoolQueryInfo = School.query(School.uuid == post.school_uuid).fetch()
             schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
             if schoolInfo:
-                '''
-                startDate = datetime.strftime(dateTimePattern, datetime.strptime(post.startDate, dateConvertPattern)),
-                endDate = datetime.strftime(dateTimePattern, datetime.strptime(post.endDate, dateConvertPattern)),
-                readStartDate = datetime.strftime(dateTimePattern, datetime.strptime(post.readStartDate, dateConvertPattern)),
-                readEndDate = datetime.strftime(dateTimePattern, datetime.strptime(post.readEndDate, dateConvertPattern)),
-                '''
-                logging.info("OVER HERE")
-                logging.info(type(post.startDate))
                 self.render("submit/submit.html",
                                 school_code = schoolInfo.school_code,
                                 title=post.title,
