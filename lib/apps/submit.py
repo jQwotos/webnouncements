@@ -22,7 +22,12 @@ class Submit(Handler):
     def get(self):
         # Find the school code from get reqeust in url
         school = self.request.get('sc')
+        user = users.get_current_user()
 
+        if not user:
+            warning = "WARNING, you are currently NOT signed in. The announcement must be approved by a registered user before the announcement will be displayed!"
+        else:
+            warning = ""
         if school:
             schoolQueryInfo = School.query(School.school_code == school).fetch()
             schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
@@ -31,7 +36,7 @@ class Submit(Handler):
                 # Render template with school_name and school_code prefilled
                 self.render(submit_html, data={
                     "sc": school,
-                }, school_name = schoolInfo.name, school_code = schoolInfo.school_code)
+                }, school_name = schoolInfo.name, school_code = schoolInfo.school_code, error=warning)
             else:
                 self.render(badsubmit_html, error="Invalid School Code")
         else:
