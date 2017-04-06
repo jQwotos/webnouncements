@@ -2,6 +2,18 @@
 <html>
   <body>
     {% include '_includes/head.html' %}
+    <div class="row">
+      <div class="col s6">
+        <div class="collection">
+          <a href="/submit?sc={{school_code}}" class="collection-item orange white-text">Submit</a>
+        </div>
+      </div>
+      <div class="col s6">
+        <div class="collection">
+          <a href="#" onclick="toggleAll()" class="collection-item orange white-text">Expand All</a>
+        </div>
+      </div>
+
     <ul class="collapsible" data-collapsible="expandable">
       {% for post in posts %}
       <li>
@@ -10,16 +22,7 @@
       </li>
       {% endfor %}
     </ul>
-    <div class="fixed-action-btn" style="left:24px;">
-      <a class="btn-floating btn-large orange" onClick="toggleAll()" title="Expand All">
-        <i class="material-icons">expand_more</i>
-      </a>
-    </div>
-    <div class="fixed-action-btn">
-      <a class="btn-floating btn-large orange" target="_blank" href="/submit?sc={{school_code}}">
-        <i class="material-icons">playlist_add</i>
-      </a>
-    </div>
+  </div>
     {% include '_includes/scripts.html' %}
     <script>
     // Event fire by Kooilnc http://stackoverflow.com/questions/2705583/how-to-simulate-a-click-with-javascript

@@ -11,7 +11,7 @@ from google.appengine.api import users
 from ..supports.dater import poster
 from ..supports.main import Handler
 from ..supports.tables import Post, SchoolAccount, Invite, School, Account
-from ..supports.constants import time_delta
+from ..supports.constants import time_delta, dateTimePattern, dateConvertPattern
 
 static_location = '/manage'
 
@@ -83,40 +83,24 @@ class EditPost(Handler):
         post = postQueryInfo[0] if len(postQueryInfo) > 0 else None
 
         if post and SchoolAccount.verifyLink(user.user_id(), schoolID):
-            date = str(post.startDate) + ' to ' + str(post.endDate)
-            logging.info("Start read date %s" % (post.readStartDate))
-            readDate = str(post.readStartDate) + ' to ' + str(post.readEndDate) if post.readStartDate and post.readEndDate else ""
-            logging.info("Read date: %s" % (readDate))
             schoolQueryInfo = School.query(School.uuid == post.school_uuid).fetch()
             schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None
             if schoolInfo:
-                self.render("submit/submit.html", school_code = schoolInfo.school_code, title=post.title, text=post.text, date=date, readDate=readDate, link=static_location + '/edit', postID = post.uuid)
+                self.render("submit/submit.html",
+                                school_code = schoolInfo.school_code,
+                                title=post.title,
+                                text=post.text,
+                                startDate = post.startDate.strftime(dateTimePattern),
+                                endDate = datetime.strftime(post.endDate, dateTimePattern),
+                                readStartDate = datetime.strftime(post.readStartDate, dateTimePattern) if post.readStartDate else None,
+                                readEndDate = datetime.strftime(post.readEndDate, dateTimePattern) if post.readEndDate else None,
+                                link=static_location + '/edit',
+                                postID = post.uuid,
+                            )
 
     def post(self):
         poster(self, new = False)
-        '''
-        user = users.get_current_user()
-        data = {
-            "title": self.request.get("title"),
-            "text": self.request.get("text"),
-            "startDate": datetime.strptime(self.request.get("startDate"), '%d %B, %Y'),
-            "endDate": datetime.strptime(self.request.get("endDate"), '%d %B, %Y'),
-            "post_uuid": self.request.get("post_uuid"),
-        }
 
-        postQueryInfo = Post.query(Post.uuid == data['post_uuid']).fetch()
-        post = postQueryInfo[0] if len(postQueryInfo) > 0 else None
-
-        if post and SchoolAccount.verifyLink(user.user_id(), post.school_uuid):
-            post.title = data['title']
-            post.text = data['text']
-            post.startDate = data['startDate']
-            post.endDate = data['endDate']
-
-            post.put()
-
-            self.redirect(static_location + '/post?sid=%s' % (post.school_uuid))
-        '''
 app = webapp2.WSGIApplication([
     (static_location + '/main', Manage),
     (static_location + '/delete', DeleteUser),

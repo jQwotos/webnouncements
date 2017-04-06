@@ -13,6 +13,7 @@ from ..supports.tables import Account, School, Post, SchoolAccount
 static_location = '/cloud'
 
 def registerNewUser(user):
+    # Registers a new user into the database if they don't already exist in the database
     accountQueryInfo = Account.query(Account.user_id == user.user_id()).fetch()
     if len(accountQueryInfo) == 0:
         newAccount = Account(
@@ -24,6 +25,7 @@ def registerNewUser(user):
 
 class Cloud(Handler):
     def get(self):
+        # Renders the main page of cloud
         user = users.get_current_user()
         accountQueryInfo = Account.query(Account.user_id == user.user_id()).fetch()
         if len(accountQueryInfo) > 0:
@@ -42,6 +44,12 @@ class Cloud(Handler):
             self.redirect(static_location + '/main')
 
 class GenerateSchool(Handler):
+    '''
+
+    The class that is used to generate a school. This is fully implemented HOWEVER hidden and only directly accessible
+    the direct link.
+
+    '''
     def get(self):
         self.render("generateSchool.html")
 
@@ -62,6 +70,8 @@ class GenerateSchool(Handler):
                 description = data['description'],
                 school_code = school_code,
             )
+
+            # Automatically make the link between the creator and make them admin of school
             schoolAccount = SchoolAccount(
                 user_id = user.user_id(),
                 school_uuid = data['uuid'],
