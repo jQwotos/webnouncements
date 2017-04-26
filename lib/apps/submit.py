@@ -26,8 +26,15 @@ class Submit(Handler):
 
         if not user:
             warning = "WARNING, you are currently NOT signed in. The announcement must be approved by a registered user before the announcement will be displayed!"
+        elif not SchoolAccount.verifyLinkSC(user.user_id(), school):
+            warning = '''
+            WARNING!!! This google account is not associated with the school!
+            Please check your email or google group for an instant invite link from an administrator,
+            or sign in with a different account that is associated with the school.
+            '''
         else:
             warning = ""
+        # warning = SchoolAccount.getLinkSC(user.user_id(), school)
         if school:
             schoolQueryInfo = School.query(School.school_code == school).fetch()
             schoolInfo = schoolQueryInfo[0] if len(schoolQueryInfo) > 0 else None

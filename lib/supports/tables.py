@@ -1,3 +1,5 @@
+import logging
+
 from google.appengine.ext import ndb
 from uuid import uuid4
 
@@ -47,6 +49,17 @@ class SchoolAccount(ndb.Model):
     def verifyLink(self, request_user, request_school):
         # Verifies that the user does indeed belong to the school
         return True if len(self.query(SchoolAccount.user_id == request_user, self.school_uuid == request_school).fetch()) > 0 else False
+
+    @classmethod
+    def verifyLinkSC(self, request_user, request_school):
+        schoolQueryInfo = School.query(School.school_code == request_school).fetch()
+        if len(schoolQueryInfo) > 0:
+            schoolQueryInfo = schoolQueryInfo[0]
+            linkQueryInfo = self.query(self.user_id == request_user, self.school_uuid == schoolQueryInfo.uuid).fetch()
+            return True if len(linkQueryInfo) > 0 else False
+        else:
+            logging.warning("School with code %s does not exist." % (request_school))
+            return False
 
 
 # ndb Post Entity
