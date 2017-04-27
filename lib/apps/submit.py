@@ -21,7 +21,7 @@ badsubmit_html = "submit/badsubmission.html"
 class Submit(Handler):
     def get(self):
         # Find the school code from get reqeust in url
-        school = self.request.get('sc')
+        school = self.request.get('sc').lower()
         user = users.get_current_user()
 
         if not user:

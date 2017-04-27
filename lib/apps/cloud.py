@@ -68,7 +68,7 @@ class GenerateSchool(Handler):
                 name = data["name"],
                 address = data["address"],
                 description = data['description'],
-                school_code = school_code,
+                school_code = school_code.lower(),
             )
 
             # Automatically make the link between the creator and make them admin of school
