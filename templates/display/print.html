@@ -3,17 +3,11 @@
   <body>
     {% include '_includes/head.html' %}
     <div class="container">
-      <p>
-        Only read announcements with stars
-      </p>
       <ul class="collection">
         {% for post in posts %}
         <li class="collection-item">
           <div>
             <b>{{post.title}}</b>
-            {% if post.star %}
-            <a class="secondary-content"><i class="material-icons">star</i></a>
-            {% endif %}
             <p>
               {{post.text}}
             </p>

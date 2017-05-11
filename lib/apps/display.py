@@ -41,18 +41,13 @@ class Print(Handler):
         # Most of this code is duplicated, so it should be moved to a seperate function and that should just be called.
         today = datetime.datetime.now().date()
         school = self.request.get('s')
-        posts = Post.query(Post.school_uuid == school, Post.approved == True, Post.startDate <= today).fetch()
+        posts = Post.query(Post.school_uuid == school, Post.approved == True, Post.readStartDate <= today).fetch()
 
         schoolQueryInfo = School.query(School.uuid == school).fetch()
         schoolCode = schoolQueryInfo[0].school_code if len(schoolQueryInfo) > 0 else None
         for post in list(posts):
-            if not post.endDate >= today:
+            if post.readEndDate == None or post.readStartDate == None or not post.readEndDate >= today:
                 posts.remove(post)
-
-        # Star the posts that should be read
-        for post in posts:
-            if post.readStartDate and post.readEndDate and post.readStartDate <= today and post.readEndDate >= today:
-                post.star = True
 
         self.renderBlank('display/print.html', posts = posts, school_code=schoolCode)
 
