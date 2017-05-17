@@ -37,6 +37,16 @@
           </div>
         </div>
       </div>
+      <div class="col s12" id="mergeRead">
+        <div class="switch">
+          <label>
+            Custom Read Dates
+            <input type="checkbox" id="mergeReadSwitch" name="mergeReadSwitch" onClick="updateRead()"/>
+            <span class="lever"></span>
+            Read on Same Dates
+          </label>
+        </div>
+      </div>
       <div class="col s12" id="readDate">
         <div class="card">
           <div class="row">
@@ -61,6 +71,15 @@
 {% endblock %}
 {% block scripts %}
 <script>
+function updateRead(){
+  console.log($("#mergeReadSwitch").is(':checked'));
+  if ($("#mergeReadSwitch").is(':checked')) {
+    $("#readDate").hide();
+  } else {
+    $("#readDate").show();
+  };
+};
+
 $("#startDate").pickadate({
   selectMonths: true,
   selectYears: false,
@@ -71,7 +90,8 @@ $("#startDate").pickadate({
       this.close();
       console.log("Start date set to ", $("#startDate").val());
       $('#endDate').pickadate('picker').set('min', $('#startDate').val());
-      $('#readStartDate').val($('#startDate').val());
+      $('#readStartDate').pickadate('picker').set('min', $('#startDate').val());
+      // $('#readStartDate').val($('#startDate').val());
     };
   }
 });
@@ -83,10 +103,24 @@ $("#endDate").pickadate({
   onSet: function(arg){
     if ('select' in arg){
       this.close();
-      $('#readEndDate').val($('#endDate').val());
+      //$('#readEndDate').val($('#endDate').val());
+      $('#readStartDate').pickadate('picker').set('max', $('#endDate').val());
+      $('#readEndDate').pickadate('picker').set('max', $('#endDate').val());
     };
   }
 });
+
+$("#readStartDate").pickadate({
+  selectMonths: true,
+  selectYears: false,
+  closeOnClear: true,
+  onSet: function(arg) {
+    if ('select' in arg){
+      this.close();
+      $('#readEndDate').pickadate('picker').set('min', $("#readStartDate").val());
+    }
+  }
+})
 
 $(".datepicker").pickadate({
   selectMonths: true,
@@ -99,13 +133,18 @@ $(".datepicker").pickadate({
 });
 </script>
 <script>
-$("#form").submit(function(){
-  if ($("#startDate").val() == "" || $("endDate").val() == ""){
-    console.log("BROKEN ENTRY")
-    Materialize.toast('Please fill in read or end date values', 4000);
-    return false;
-  }
-});
+  $("#form").submit(function(){
+    if ($("#startDate").val() == "" || $("endDate").val() == ""){
+      Materialize.toast('Please fill in read or end date values', 4000);
+      return false;
+    } else {
+      // If the merge read switch is checked then change the values for read end and read start
+      if ($("#mergeReadSwitch").is(":checked")) {
+        $('#readEndDate').val($('#endDate').val());
+        $('#readStartDate').val($('#startDate').val());
+      };
+    };
+  });
 </script>
 <script>
 $("#startDate").pickadate('picker').set("select", "{{startDate}}")
