@@ -17,7 +17,7 @@
     <ul class="collapsible" data-collapsible="expandable">
       {% for post in posts %}
       <li>
-         <div class="collapsible-header">{{post.title}}</div>
+         <div class="collapsible-header">{% if post.star %}<a class="secondary-content"><i class="material-icons">star</i></a>{% endif %}{{post.title}}</div>
          <div class="collapsible-body">{{post.text}}</div>
       </li>
       {% endfor %}

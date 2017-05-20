@@ -33,6 +33,10 @@ class Today(Handler):
             if not post.endDate >= today:
                 posts.remove(post)
 
+        for post in posts:
+            if post.readStartDate and post.readEndDate and post.readEndDate >= today and post.readStartDate <= today:
+                post.star = True
+
         # Simplistic render the posts with school_code
         self.renderBlank('display/display.html', posts = posts, school_code=schoolCode)
 
