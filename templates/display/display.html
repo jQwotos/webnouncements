@@ -3,20 +3,25 @@
   <body>
     {% include '_includes/head.html' %}
     <div class="row">
-      <div class="col s6">
+      <div class="col s4">
         <div class="collection">
           <a href="/submit?sc={{school_code}}" target="_blank" class="collection-item orange white-text">Submit</a>
         </div>
       </div>
-      <div class="col s6">
+      <div class="col s4">
         <div class="collection">
           <a href="#" onclick="toggleAll()" class="collection-item orange white-text">Expand All</a>
+        </div>
+      </div>
+      <div class="col s4">
+        <div class="collection">
+          <a href="#" onclick="toggleWebOnly()" class="collection-item orange white-text">Toggle Read Only</a>
         </div>
       </div>
 
     <ul class="collapsible" data-collapsible="expandable">
       {% for post in posts %}
-      <li>
+      <li {% if post.star %}stared="true"{% endif %} class="entry">
          <div class="collapsible-header">{% if post.star %}<a class="secondary-content"><i class="material-icons">star</i></a>{% endif %}{{post.title}}</div>
          <div class="collapsible-body">{{post.text}}</div>
       </li>
@@ -40,6 +45,16 @@
       console.log("Activated");
       $(".collapsible-header").each(function(){
         eventFire(this, 'click');
+      });
+    };
+
+    function toggleWebOnly(){
+      console.log("Toggling website only");
+      $(".entry").each(function(){
+        console.log($(this).attr('stared'))
+        if ($(this).attr('stared') != "true") {
+          $(this).toggle();
+        };
       });
     };
     </script>
