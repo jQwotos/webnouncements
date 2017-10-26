@@ -25,12 +25,12 @@ class Submit(Handler):
         user = users.get_current_user()
 
         if not user:
-            warning = "WARNING, you are currently NOT signed in. The announcement must be approved by a registered user before the announcement will be displayed!"
+            warning = "Your email account is not registered for access to this application. If you are a [school name] staff member, you can register for access using the instructions provided by your school.  Contact your computer contact teacher if you need more information"
         elif not SchoolAccount.verifyLinkSC(user.user_id(), school):
             warning = '''
-            WARNING!!! This google account is not associated with the school!
-            Please check your email or google group for an instant invite link from an administrator,
-            or sign in with a different account that is associated with the school.
+            Your email account is not registered for access to this application. If you are a [school name] staff member,
+            you can register for access using the instructions provided by your school.  Contact your computer contact 
+            teacher if you need more information
             '''
         else:
             warning = ""
