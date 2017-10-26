@@ -30,7 +30,7 @@ class Submit(Handler):
             warning = '''
             Your email account is not registered for access to this application. If you are a [school name] staff member,
             you can register for access using the instructions provided by your school.  Contact your computer contact 
-            teacher if you need more information.
+            teacher if you need more information
             '''
         else:
             warning = ""
