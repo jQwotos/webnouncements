@@ -1,2 +1,11 @@
-runtime: go
-env: flex
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /supplier/.*
+  script: routes/supplier.app
+- url: /rent/.*
+  scripts: routes/rent.app
+- url: /games/.*
+  scripts: routes/games.app
